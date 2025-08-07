@@ -1,0 +1,17 @@
+/*
+=================================================================================
+--- File: 5_frontend_react/src/index.css
+--- Purpose: This is the main entry point for our application's styles. These
+--- directives inject Tailwind's base styles, component classes, and utility
+--- classes into our app.
+=================================================================================
+*/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Add any global, custom base styles here */
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}

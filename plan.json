@@ -1,0 +1,2382 @@
+{
+  "buildId": "sneakerhub-e-commerce-1754571640940",
+  "buildPlan": {
+    "dataModels": {
+      "models": [
+        {
+          "name": "User",
+          "description": "Represents a user or customer.",
+          "fields": {
+            "id": {
+              "type": "uuid",
+              "description": "Unique identifier for the user.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": true,
+              "unique": true
+            },
+            "email": {
+              "type": "string",
+              "description": "User's email address.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": true,
+              "unique": true
+            },
+            "password_hash": {
+              "type": "hashed_string",
+              "description": "Securely stored password hash.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": false,
+              "unique": false
+            },
+            "first_name": {
+              "type": "string",
+              "description": "User's first name.",
+              "required": false,
+              "enum_values": null,
+              "default": null,
+              "indexed": false,
+              "unique": false
+            },
+            "last_name": {
+              "type": "string",
+              "description": "User's last name.",
+              "required": false,
+              "enum_values": null,
+              "default": null,
+              "indexed": false,
+              "unique": false
+            },
+            "role": {
+              "type": "enum",
+              "description": "User's role (customer or admin).",
+              "required": true,
+              "enum_values": ["customer", "admin"],
+              "default": "customer",
+              "indexed": false,
+              "unique": false
+            },
+            "created_at": {
+              "type": "timestamp",
+              "description": "Timestamp of user creation.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": false,
+              "unique": false
+            },
+            "updated_at": {
+              "type": "timestamp",
+              "description": "Timestamp of last user update.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": false,
+              "unique": false
+            }
+          },
+          "relationships": {
+            "hasMany": ["Order", "Cart"]
+          }
+        },
+        {
+          "name": "Product",
+          "description": "Represents a product for sale.",
+          "fields": {
+            "id": {
+              "type": "uuid",
+              "description": "Unique identifier for the product.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": true,
+              "unique": false
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of the product.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": true,
+              "unique": false
+            },
+            "description": {
+              "type": "text",
+              "description": "Detailed description of the product.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": false,
+              "unique": false
+            },
+            "price": {
+              "type": "decimal",
+              "description": "Price of the product.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": false,
+              "unique": false
+            },
+            "brand_id": {
+              "type": "uuid",
+              "description": "Foreign key referencing the Brand.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": true,
+              "unique": false
+            },
+            "created_at": {
+              "type": "timestamp",
+              "description": "Timestamp of when the product was created.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": false,
+              "unique": false
+            },
+            "updated_at": {
+              "type": "timestamp",
+              "description": "Timestamp of when the product was last updated.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": false,
+              "unique": false
+            },
+            "sku": {
+              "type": "string",
+              "description": "Stock Keeping Unit (SKU) for the product.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": true,
+              "unique": true
+            },
+            "slug": {
+              "type": "string",
+              "description": "URL-friendly identifier for the product.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": true,
+              "unique": true
+            }
+          },
+          "relationships": {
+            "belongsTo": ["Brand"],
+            "hasMany": [
+              "ProductImage",
+              "CartItem",
+              "OrderItem",
+              "ProductVariant"
+            ]
+          }
+        },
+        {
+          "name": "Order",
+          "description": "Represents a customer order.",
+          "fields": {
+            "id": {
+              "type": "uuid",
+              "description": "Unique identifier for the order.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": true,
+              "unique": false
+            },
+            "customer_id": {
+              "type": "uuid",
+              "description": "Foreign key referencing the Customer who placed the order.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": true,
+              "unique": false
+            },
+            "order_date": {
+              "type": "timestamp",
+              "description": "Date and time the order was placed.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": false,
+              "unique": false
+            },
+            "total_amount": {
+              "type": "decimal",
+              "description": "Total amount of the order.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": false,
+              "unique": false
+            },
+            "status": {
+              "type": "enum",
+              "description": "Current status of the order.",
+              "required": true,
+              "enum_values": [
+                "pending",
+                "processing",
+                "shipped",
+                "delivered",
+                "cancelled"
+              ],
+              "default": "pending",
+              "indexed": false,
+              "unique": false
+            },
+            "shipping_address_id": {
+              "type": "uuid",
+              "description": "Foreign key referencing the ShippingAddress for the order.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": true,
+              "unique": false
+            },
+            "payment_method_id": {
+              "type": "uuid",
+              "description": "Foreign key referencing the PaymentMethod used for the order.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": true,
+              "unique": false
+            },
+            "billing_address_id": {
+              "type": "uuid",
+              "description": "Foreign key referencing the BillingAddress for the order.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": true,
+              "unique": false
+            }
+          },
+          "relationships": {
+            "belongsTo": [
+              "Customer",
+              "ShippingAddress",
+              "PaymentMethod",
+              "BillingAddress"
+            ],
+            "hasMany": ["OrderItem"]
+          }
+        },
+        {
+          "name": "Cart",
+          "description": "Represents a user shopping cart.",
+          "fields": {
+            "id": {
+              "type": "uuid",
+              "description": "Unique identifier for the cart.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": true,
+              "unique": true
+            },
+            "user_id": {
+              "type": "uuid",
+              "description": "Foreign key referencing the User who owns the cart.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": true,
+              "unique": false
+            },
+            "created_at": {
+              "type": "timestamp",
+              "description": "Timestamp indicating when the cart was created.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": false,
+              "unique": false
+            },
+            "updated_at": {
+              "type": "timestamp",
+              "description": "Timestamp indicating when the cart was last updated.",
+              "required": true,
+              "enum_values": null,
+              "default": null,
+              "indexed": false,
+              "unique": false
+            }
+          },
+          "relationships": {
+            "belongsTo": ["User"],
+            "hasMany": ["CartItem"]
+          }
+        }
+      ]
+    },
+    "backendApis": {
+      "apis": [
+        {
+          "id": "get-products",
+          "method": "GET",
+          "path": "/api/products",
+          "description": "Retrieve a list of all products.",
+          "auth": {
+            "required": false,
+            "allowedRoles": null
+          },
+          "pathParams": null,
+          "queryParams": {
+            "limit": {
+              "type": "integer",
+              "description": "Maximum number of products to return.",
+              "default": 20
+            },
+            "offset": {
+              "type": "integer",
+              "description": "Offset for pagination.",
+              "default": 0
+            },
+            "brand_id": {
+              "type": "string",
+              "description": "UUID of the brand to filter by."
+            },
+            "search": {
+              "type": "string",
+              "description": "Search term for product name or description."
+            },
+            "sort_by": {
+              "type": "string",
+              "description": "Field to sort by (e.g., 'price', 'name').",
+              "default": "name"
+            },
+            "sort_order": {
+              "type": "string",
+              "description": "Sort order ('asc' or 'desc').",
+              "default": "asc",
+              "enum": ["asc", "desc"]
+            }
+          },
+          "requestBody": null,
+          "successResponse": {
+            "statusCode": 200,
+            "description": "Successfully retrieved products.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Product"
+              }
+            }
+          },
+          "errorResponses": [
+            {
+              "statusCode": 400,
+              "description": "Bad request, invalid parameters provided.",
+              "schema": {
+                "error": {
+                  "code": "INVALID_PARAMETERS",
+                  "message": "Invalid parameters provided."
+                }
+              }
+            },
+            {
+              "statusCode": 500,
+              "description": "Internal server error.",
+              "schema": {
+                "error": {
+                  "code": "INTERNAL_SERVER_ERROR",
+                  "message": "An unexpected error occurred."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "get-product-by-id",
+          "method": "GET",
+          "path": "/api/products/:id",
+          "description": "Retrieve details for a single product.",
+          "auth": {
+            "required": false,
+            "allowedRoles": null
+          },
+          "pathParams": {
+            "id": {
+              "type": "uuid",
+              "description": "The unique identifier of the product."
+            }
+          },
+          "queryParams": null,
+          "requestBody": null,
+          "successResponse": {
+            "statusCode": 200,
+            "description": "Successfully retrieved product details.",
+            "schema": {
+              "$ref": "#/definitions/Product"
+            }
+          },
+          "errorResponses": [
+            {
+              "statusCode": 404,
+              "description": "Product not found.",
+              "schema": {
+                "error": {
+                  "code": "PRODUCT_NOT_FOUND",
+                  "message": "The requested product could not be found."
+                }
+              }
+            },
+            {
+              "statusCode": 500,
+              "description": "Internal server error.",
+              "schema": {
+                "error": {
+                  "code": "INTERNAL_SERVER_ERROR",
+                  "message": "An unexpected error occurred on the server."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "add-to-cart",
+          "method": "POST",
+          "path": "/api/cart",
+          "description": "Add a product to the user's shopping cart.",
+          "auth": {
+            "required": true,
+            "allowedRoles": ["customer"]
+          },
+          "pathParams": null,
+          "queryParams": null,
+          "requestBody": {
+            "type": "object",
+            "properties": {
+              "product_id": {
+                "type": "uuid",
+                "description": "The UUID of the product to add."
+              },
+              "quantity": {
+                "type": "integer",
+                "description": "The quantity of the product to add.",
+                "minimum": 1
+              },
+              "variant_id": {
+                "type": "uuid",
+                "description": "Optional: The UUID of the product variant to add (e.g., size, color).",
+                "nullable": true
+              }
+            },
+            "required": ["product_id", "quantity"]
+          },
+          "successResponse": {
+            "statusCode": 201,
+            "description": "Product successfully added to cart.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "description": "Success message confirming the addition."
+                },
+                "cart": {
+                  "$ref": "#/definitions/Cart"
+                }
+              },
+              "required": ["message", "cart"]
+            }
+          },
+          "errorResponses": [
+            {
+              "statusCode": 400,
+              "description": "Bad request. Invalid input data.",
+              "schema": {
+                "error": {
+                  "code": "INVALID_INPUT",
+                  "message": "Invalid product_id, quantity, or variant_id provided."
+                }
+              }
+            },
+            {
+              "statusCode": 401,
+              "description": "Unauthorized. User is not authenticated.",
+              "schema": {
+                "error": {
+                  "code": "UNAUTHORIZED",
+                  "message": "Authentication required."
+                }
+              }
+            },
+            {
+              "statusCode": 403,
+              "description": "Forbidden. User is not authorized to perform this action.",
+              "schema": {
+                "error": {
+                  "code": "FORBIDDEN",
+                  "message": "Insufficient permissions to add to cart."
+                }
+              }
+            },
+            {
+              "statusCode": 404,
+              "description": "Not Found. The requested product or variant does not exist.",
+              "schema": {
+                "error": {
+                  "code": "NOT_FOUND",
+                  "message": "Product or variant not found."
+                }
+              }
+            },
+            {
+              "statusCode": 500,
+              "description": "Internal Server Error. An unexpected error occurred.",
+              "schema": {
+                "error": {
+                  "code": "INTERNAL_SERVER_ERROR",
+                  "message": "An error occurred while processing your request."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "checkout",
+          "method": "POST",
+          "path": "/api/checkout",
+          "description": "Process the user's cart and create an order.",
+          "auth": {
+            "required": true,
+            "allowedRoles": ["customer"]
+          },
+          "pathParams": null,
+          "queryParams": null,
+          "requestBody": {
+            "type": "object",
+            "properties": {
+              "shipping_address_id": {
+                "type": "uuid",
+                "description": "ID of the shipping address"
+              },
+              "billing_address_id": {
+                "type": "uuid",
+                "description": "ID of the billing address"
+              },
+              "payment_method_id": {
+                "type": "uuid",
+                "description": "ID of the payment method"
+              }
+            },
+            "required": [
+              "shipping_address_id",
+              "billing_address_id",
+              "payment_method_id"
+            ]
+          },
+          "successResponse": {
+            "statusCode": 201,
+            "description": "Order created successfully.",
+            "schema": {
+              "$ref": "#/definitions/Order"
+            }
+          },
+          "errorResponses": [
+            {
+              "statusCode": 400,
+              "description": "Bad request. Invalid input data.",
+              "schema": {
+                "error": {
+                  "code": "INVALID_INPUT",
+                  "message": "Invalid input data provided."
+                }
+              }
+            },
+            {
+              "statusCode": 401,
+              "description": "Unauthorized. User is not authenticated.",
+              "schema": {
+                "error": {
+                  "code": "UNAUTHORIZED",
+                  "message": "User authentication required."
+                }
+              }
+            },
+            {
+              "statusCode": 403,
+              "description": "Forbidden. User is not authorized to perform this action.",
+              "schema": {
+                "error": {
+                  "code": "FORBIDDEN",
+                  "message": "User does not have permission to perform this action."
+                }
+              }
+            },
+            {
+              "statusCode": 404,
+              "description": "Not found. Cart not found or items in cart not available.",
+              "schema": {
+                "error": {
+                  "code": "NOT_FOUND",
+                  "message": "Cart or cart items not found."
+                }
+              }
+            },
+            {
+              "statusCode": 500,
+              "description": "Internal server error. An unexpected error occurred during checkout.",
+              "schema": {
+                "error": {
+                  "code": "INTERNAL_SERVER_ERROR",
+                  "message": "An unexpected error occurred."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "get-inventory",
+          "method": "GET",
+          "path": "/api/admin/inventory",
+          "description": "Get inventory levels for products.",
+          "auth": {
+            "required": true,
+            "allowedRoles": ["admin"]
+          },
+          "pathParams": null,
+          "queryParams": null,
+          "requestBody": null,
+          "successResponse": {
+            "statusCode": 200,
+            "description": "Successfully retrieved inventory levels.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "product_id": {
+                    "type": "uuid",
+                    "description": "Unique identifier for the product."
+                  },
+                  "product_name": {
+                    "type": "string",
+                    "description": "Name of the product."
+                  },
+                  "sku": {
+                    "type": "string",
+                    "description": "Stock Keeping Unit (SKU) for the product."
+                  },
+                  "quantity_in_stock": {
+                    "type": "integer",
+                    "description": "The current quantity of the product in stock."
+                  }
+                },
+                "required": [
+                  "product_id",
+                  "product_name",
+                  "sku",
+                  "quantity_in_stock"
+                ]
+              }
+            }
+          },
+          "errorResponses": [
+            {
+              "statusCode": 401,
+              "description": "Unauthorized access.",
+              "schema": {
+                "error": {
+                  "code": "UNAUTHORIZED",
+                  "message": "You are not authorized to access this endpoint."
+                }
+              }
+            },
+            {
+              "statusCode": 500,
+              "description": "Internal server error.",
+              "schema": {
+                "error": {
+                  "code": "INTERNAL_SERVER_ERROR",
+                  "message": "An unexpected error occurred on the server."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "update-inventory",
+          "method": "PUT",
+          "path": "/api/admin/inventory",
+          "description": "Update inventory levels for a product.",
+          "auth": {
+            "required": true,
+            "allowedRoles": ["admin"]
+          },
+          "pathParams": null,
+          "queryParams": null,
+          "requestBody": {
+            "type": "object",
+            "properties": {
+              "productId": {
+                "type": "uuid",
+                "description": "The ID of the product to update."
+              },
+              "quantity": {
+                "type": "integer",
+                "description": "The new inventory quantity."
+              }
+            },
+            "required": ["productId", "quantity"]
+          },
+          "successResponse": {
+            "statusCode": 200,
+            "description": "Inventory updated successfully.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "example": "Inventory updated successfully."
+                },
+                "product": {
+                  "$ref": "#/definitions/Product"
+                }
+              },
+              "required": ["message", "product"]
+            }
+          },
+          "errorResponses": [
+            {
+              "statusCode": 400,
+              "description": "Bad request. Invalid input data.",
+              "schema": {
+                "error": {
+                  "code": "INVALID_INPUT",
+                  "message": "Invalid input data provided."
+                }
+              }
+            },
+            {
+              "statusCode": 401,
+              "description": "Unauthorized. User is not authenticated.",
+              "schema": {
+                "error": {
+                  "code": "UNAUTHORIZED",
+                  "message": "Authentication required."
+                }
+              }
+            },
+            {
+              "statusCode": 403,
+              "description": "Forbidden. User does not have permission to update inventory.",
+              "schema": {
+                "error": {
+                  "code": "FORBIDDEN",
+                  "message": "You do not have permission to perform this action."
+                }
+              }
+            },
+            {
+              "statusCode": 404,
+              "description": "Not found. Product not found.",
+              "schema": {
+                "error": {
+                  "code": "PRODUCT_NOT_FOUND",
+                  "message": "Product not found."
+                }
+              }
+            },
+            {
+              "statusCode": 500,
+              "description": "Internal server error.",
+              "schema": {
+                "error": {
+                  "code": "INTERNAL_SERVER_ERROR",
+                  "message": "An unexpected error occurred."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "get-orders",
+          "method": "GET",
+          "path": "/api/admin/orders",
+          "description": "Retrieve a list of all customer orders.",
+          "auth": {
+            "required": true,
+            "allowedRoles": ["admin"]
+          },
+          "pathParams": null,
+          "queryParams": null,
+          "requestBody": null,
+          "successResponse": {
+            "statusCode": 200,
+            "description": "Successfully retrieved a list of orders.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Order"
+              }
+            }
+          },
+          "errorResponses": [
+            {
+              "statusCode": 401,
+              "description": "Unauthorized access.",
+              "schema": {
+                "error": {
+                  "code": "UNAUTHORIZED",
+                  "message": "You are not authorized to access this resource."
+                }
+              }
+            },
+            {
+              "statusCode": 500,
+              "description": "Internal server error.",
+              "schema": {
+                "error": {
+                  "code": "INTERNAL_SERVER_ERROR",
+                  "message": "An unexpected error occurred."
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "api_health_check",
+          "method": "GET",
+          "path": "/api/health",
+          "description": "System-injected health check endpoint.",
+          "auth": {
+            "required": false
+          },
+          "successResponse": {
+            "statusCode": 200,
+            "schema": {
+              "status": "string"
+            }
+          },
+          "errorResponses": []
+        }
+      ]
+    },
+    "uiSpecs": {
+      "uiSpecs": [
+        {
+          "id": "Homepage",
+          "spec": {
+            "component": "Page",
+            "description": "Homepage UI Specification",
+            "layout": {},
+            "props": {},
+            "content": null,
+            "children": [
+              {
+                "component": "AppLayout",
+                "description": "Standard application layout",
+                "layout": {},
+                "props": {},
+                "content": null,
+                "children": [
+                  {
+                    "component": "Header",
+                    "description": "Website header with logo and navigation",
+                    "layout": {},
+                    "props": {},
+                    "content": null,
+                    "children": [
+                      {
+                        "component": "Logo",
+                        "description": "SneakerHub logo",
+                        "layout": {},
+                        "props": {
+                          "src": "/images/logo.png",
+                          "alt": "SneakerHub Logo"
+                        },
+                        "content": null,
+                        "children": [],
+                        "eventTrigger": null,
+                        "renderIf": null,
+                        "repeatFor": null
+                      },
+                      {
+                        "component": "Navigation",
+                        "description": "Main navigation links",
+                        "layout": {},
+                        "props": {},
+                        "content": null,
+                        "children": [
+                          {
+                            "component": "NavLink",
+                            "description": "Link to Men's shoes",
+                            "layout": {},
+                            "props": {
+                              "href": "/mens",
+                              "label": "Men's"
+                            },
+                            "content": null,
+                            "children": [],
+                            "eventTrigger": null,
+                            "renderIf": null,
+                            "repeatFor": null
+                          },
+                          {
+                            "component": "NavLink",
+                            "description": "Link to Women's shoes",
+                            "layout": {},
+                            "props": {
+                              "href": "/womens",
+                              "label": "Women's"
+                            },
+                            "content": null,
+                            "children": [],
+                            "eventTrigger": null,
+                            "renderIf": null,
+                            "repeatFor": null
+                          }
+                        ],
+                        "eventTrigger": null,
+                        "renderIf": null,
+                        "repeatFor": null
+                      }
+                    ],
+                    "eventTrigger": null,
+                    "renderIf": null,
+                    "repeatFor": null
+                  },
+                  {
+                    "component": "HeroSection",
+                    "description": "Homepage hero section with featured sneakers",
+                    "layout": {},
+                    "props": {},
+                    "content": null,
+                    "children": [
+                      {
+                        "component": "Carousel",
+                        "description": "Carousel of featured sneakers",
+                        "layout": {},
+                        "props": {},
+                        "content": null,
+                        "children": [
+                          {
+                            "component": "Image",
+                            "description": "Featured sneaker image",
+                            "layout": {},
+                            "props": {
+                              "src": "{featuredSneaker.imageUrl}",
+                              "alt": "{featuredSneaker.name}"
+                            },
+                            "content": null,
+                            "children": [],
+                            "eventTrigger": null,
+                            "renderIf": null,
+                            "repeatFor": null
+                          },
+                          {
+                            "component": "Title",
+                            "description": "Featured sneaker title",
+                            "layout": {},
+                            "props": {},
+                            "content": "{featuredSneaker.name}",
+                            "children": [],
+                            "eventTrigger": null,
+                            "renderIf": null,
+                            "repeatFor": null
+                          }
+                        ],
+                        "eventTrigger": null,
+                        "renderIf": null,
+                        "repeatFor": "featuredSneaker in featuredSneakers"
+                      }
+                    ],
+                    "eventTrigger": null,
+                    "renderIf": null,
+                    "repeatFor": null
+                  },
+                  {
+                    "component": "BrandCategorySection",
+                    "description": "Section displaying brand categories",
+                    "layout": {},
+                    "props": {},
+                    "content": null,
+                    "children": [
+                      {
+                        "component": "SectionTitle",
+                        "description": "Title for the brand category section",
+                        "layout": {},
+                        "props": {},
+                        "content": "Browse by Brand",
+                        "children": [],
+                        "eventTrigger": null,
+                        "renderIf": null,
+                        "repeatFor": null
+                      },
+                      {
+                        "component": "BrandGrid",
+                        "description": "Grid of brand logos",
+                        "layout": {},
+                        "props": {},
+                        "content": null,
+                        "children": [
+                          {
+                            "component": "BrandLogo",
+                            "description": "Individual brand logo",
+                            "layout": {},
+                            "props": {
+                              "src": "{brand.logoUrl}",
+                              "alt": "{brand.name}",
+                              "onClick": "filterProductsByBrand({brand.id})"
+                            },
+                            "content": null,
+                            "children": [],
+                            "eventTrigger": "filterProductsByBrand",
+                            "renderIf": null,
+                            "repeatFor": null
+                          }
+                        ],
+                        "eventTrigger": null,
+                        "renderIf": null,
+                        "repeatFor": "brand in brands"
+                      }
+                    ],
+                    "eventTrigger": null,
+                    "renderIf": null,
+                    "repeatFor": null
+                  },
+                  {
+                    "component": "Footer",
+                    "description": "Website footer with copyright information",
+                    "layout": {},
+                    "props": {},
+                    "content": null,
+                    "children": [],
+                    "eventTrigger": null,
+                    "renderIf": null,
+                    "repeatFor": null
+                  }
+                ],
+                "eventTrigger": null,
+                "renderIf": null,
+                "repeatFor": null
+              }
+            ],
+            "eventTrigger": null,
+            "renderIf": null,
+            "repeatFor": null
+          }
+        },
+        {
+          "id": "ProductListingPage",
+          "spec": {
+            "component": "Page",
+            "description": "Lists sneakers based on selected criteria (e.g., brand, search query).",
+            "layout": {},
+            "props": {},
+            "content": null,
+            "children": [
+              {
+                "component": "AppLayout",
+                "description": "Main application layout with header and footer",
+                "layout": {},
+                "props": {},
+                "content": null,
+                "children": [
+                  {
+                    "component": "FilterBar",
+                    "description": "Component for filtering products by brand and other criteria.",
+                    "layout": {},
+                    "props": {
+                      "brands": "{brands}"
+                    },
+                    "content": null,
+                    "children": [
+                      {
+                        "component": "Dropdown",
+                        "description": "Brand selection dropdown",
+                        "layout": {},
+                        "props": {
+                          "options": "{brands}",
+                          "placeholder": "Select Brand"
+                        },
+                        "content": null,
+                        "children": [],
+                        "eventTrigger": "brandSelected",
+                        "renderIf": null,
+                        "repeatFor": null
+                      },
+                      {
+                        "component": "TextInput",
+                        "description": "Search input field",
+                        "layout": {},
+                        "props": {
+                          "placeholder": "Search Sneakers"
+                        },
+                        "content": null,
+                        "children": [],
+                        "eventTrigger": "searchTextChanged",
+                        "renderIf": null,
+                        "repeatFor": null
+                      }
+                    ],
+                    "eventTrigger": null,
+                    "renderIf": null,
+                    "repeatFor": null
+                  },
+                  {
+                    "component": "ProductList",
+                    "description": "Displays a grid of sneaker products.",
+                    "layout": {
+                      "mobile": {
+                        "flexDirection": "column"
+                      },
+                      "desktop": {
+                        "flexDirection": "row",
+                        "flexWrap": "wrap"
+                      }
+                    },
+                    "props": {},
+                    "content": null,
+                    "children": [
+                      {
+                        "component": "ProductCard",
+                        "description": "Individual product card",
+                        "layout": {},
+                        "props": {
+                          "imageUrl": "{product.imageUrl}",
+                          "title": "{product.title}",
+                          "price": "{product.price}"
+                        },
+                        "content": null,
+                        "children": [],
+                        "eventTrigger": "productClicked",
+                        "renderIf": null,
+                        "repeatFor": null
+                      }
+                    ],
+                    "eventTrigger": null,
+                    "renderIf": null,
+                    "repeatFor": "product in products"
+                  }
+                ],
+                "eventTrigger": null,
+                "renderIf": null,
+                "repeatFor": null
+              }
+            ],
+            "eventTrigger": null,
+            "renderIf": null,
+            "repeatFor": null
+          }
+        },
+        {
+          "id": "ProductDetailsPage",
+          "spec": {
+            "component": "Page",
+            "description": "Displays detailed information about a specific sneaker.",
+            "layout": {
+              "mobile": {
+                "flexDirection": "column"
+              },
+              "desktop": {
+                "flexDirection": "row"
+              }
+            },
+            "props": {},
+            "content": null,
+            "children": [
+              {
+                "component": "AppLayout",
+                "description": "Standard application layout with header and footer.",
+                "layout": {},
+                "props": {},
+                "content": null,
+                "children": [
+                  {
+                    "component": "ProductGallery",
+                    "description": "Displays multiple images of the product.",
+                    "layout": {
+                      "mobile": {
+                        "width": "100%"
+                      },
+                      "desktop": {
+                        "width": "50%"
+                      }
+                    },
+                    "props": {
+                      "images": "{data.product.images}"
+                    },
+                    "content": null,
+                    "children": [
+                      {
+                        "component": "Image",
+                        "description": "Displays a single product image.",
+                        "layout": {},
+                        "props": {
+                          "src": "{image.url}",
+                          "alt": "{image.altText}"
+                        },
+                        "content": null,
+                        "children": [],
+                        "eventTrigger": null,
+                        "renderIf": null,
+                        "repeatFor": "image in images"
+                      }
+                    ],
+                    "eventTrigger": null,
+                    "renderIf": null,
+                    "repeatFor": null
+                  },
+                  {
+                    "component": "ProductInfo",
+                    "description": "Displays detailed product information.",
+                    "layout": {
+                      "mobile": {
+                        "width": "100%"
+                      },
+                      "desktop": {
+                        "width": "50%"
+                      }
+                    },
+                    "props": {},
+                    "content": null,
+                    "children": [
+                      {
+                        "component": "Heading",
+                        "description": "Product title",
+                        "layout": {},
+                        "props": {
+                          "level": 1,
+                          "content": "{data.product.name}"
+                        },
+                        "content": null,
+                        "children": [],
+                        "eventTrigger": null,
+                        "renderIf": null,
+                        "repeatFor": null
+                      },
+                      {
+                        "component": "Text",
+                        "description": "Product brand",
+                        "layout": {},
+                        "props": {},
+                        "content": "Brand: {data.product.brand}",
+                        "children": [],
+                        "eventTrigger": null,
+                        "renderIf": null,
+                        "repeatFor": null
+                      },
+                      {
+                        "component": "Text",
+                        "description": "Product price",
+                        "layout": {},
+                        "props": {},
+                        "content": "Price: ${data.product.price}",
+                        "children": [],
+                        "eventTrigger": null,
+                        "renderIf": null,
+                        "repeatFor": null
+                      },
+                      {
+                        "component": "Text",
+                        "description": "Product description",
+                        "layout": {},
+                        "props": {},
+                        "content": "{data.product.description}",
+                        "children": [],
+                        "eventTrigger": null,
+                        "renderIf": null,
+                        "repeatFor": null
+                      },
+                      {
+                        "component": "SizeSelector",
+                        "description": "Allows user to select a size.",
+                        "layout": {},
+                        "props": {
+                          "availableSizes": "{data.product.sizes}"
+                        },
+                        "content": null,
+                        "children": [],
+                        "eventTrigger": null,
+                        "renderIf": null,
+                        "repeatFor": null
+                      },
+                      {
+                        "component": "Button",
+                        "description": "Adds the product to the cart.",
+                        "layout": {},
+                        "props": {
+                          "onClick": "addToCart({data.product.id})",
+                          "content": "Add to Cart"
+                        },
+                        "content": null,
+                        "children": [],
+                        "eventTrigger": null,
+                        "renderIf": null,
+                        "repeatFor": null
+                      }
+                    ],
+                    "eventTrigger": null,
+                    "renderIf": null,
+                    "repeatFor": null
+                  }
+                ],
+                "eventTrigger": null,
+                "renderIf": null,
+                "repeatFor": null
+              }
+            ],
+            "eventTrigger": null,
+            "renderIf": null,
+            "repeatFor": null
+          }
+        },
+        {
+          "id": "ShoppingCartPage",
+          "spec": {
+            "component": "Page",
+            "description": "Shopping Cart Page UI Specification",
+            "layout": {
+              "mobile": {
+                "flexDirection": "column"
+              },
+              "desktop": {
+                "flexDirection": "row"
+              }
+            },
+            "props": {},
+            "content": null,
+            "children": [
+              {
+                "component": "AppLayout",
+                "description": "Standard application layout with header and footer",
+                "layout": {},
+                "props": {},
+                "content": null,
+                "children": [
+                  {
+                    "component": "PageHeader",
+                    "description": "Page header with title",
+                    "layout": {},
+                    "props": {
+                      "title": "Shopping Cart"
+                    },
+                    "content": null,
+                    "children": [],
+                    "eventTrigger": null,
+                    "renderIf": null,
+                    "repeatFor": null
+                  },
+                  {
+                    "component": "Container",
+                    "description": "Main content container",
+                    "layout": {},
+                    "props": {},
+                    "content": null,
+                    "children": [
+                      {
+                        "component": "DataTable",
+                        "description": "Table displaying cart items",
+                        "layout": {},
+                        "props": {
+                          "columns": [
+                            {
+                              "title": "Product",
+                              "field": "name"
+                            },
+                            {
+                              "title": "Price",
+                              "field": "price"
+                            },
+                            {
+                              "title": "Quantity",
+                              "field": "quantity"
+                            },
+                            {
+                              "title": "Total",
+                              "field": "total"
+                            }
+                          ]
+                        },
+                        "content": null,
+                        "children": [
+                          {
+                            "component": "TableRow",
+                            "description": "Row for each cart item",
+                            "layout": {},
+                            "props": {
+                              "product": "{item.name}",
+                              "price": "{item.price}",
+                              "quantity": "{item.quantity}",
+                              "total": "{item.total}"
+                            },
+                            "content": null,
+                            "children": [
+                              {
+                                "component": "Button",
+                                "description": "Remove item button",
+                                "layout": {},
+                                "props": {
+                                  "label": "Remove",
+                                  "onClick": "removeItem({item.id})"
+                                },
+                                "content": null,
+                                "children": [],
+                                "eventTrigger": null,
+                                "renderIf": null,
+                                "repeatFor": null
+                              }
+                            ],
+                            "eventTrigger": null,
+                            "renderIf": null,
+                            "repeatFor": null
+                          }
+                        ],
+                        "eventTrigger": null,
+                        "renderIf": null,
+                        "repeatFor": "item in cartItems"
+                      },
+                      {
+                        "component": "EmptyCartMessage",
+                        "description": "Message displayed if cart is empty",
+                        "layout": {},
+                        "props": {},
+                        "content": "Your cart is empty.",
+                        "children": [],
+                        "eventTrigger": null,
+                        "renderIf": "{cartItems.length === 0}",
+                        "repeatFor": null
+                      },
+                      {
+                        "component": "Subtotal",
+                        "description": "Displays the cart subtotal",
+                        "layout": {},
+                        "props": {
+                          "value": "{cartSubtotal}"
+                        },
+                        "content": null,
+                        "children": [],
+                        "eventTrigger": null,
+                        "renderIf": "{cartItems.length > 0}",
+                        "repeatFor": null
+                      },
+                      {
+                        "component": "Button",
+                        "description": "Checkout button",
+                        "layout": {},
+                        "props": {
+                          "label": "Checkout",
+                          "onClick": "navigateToCheckout()"
+                        },
+                        "content": null,
+                        "children": [],
+                        "eventTrigger": null,
+                        "renderIf": "{cartItems.length > 0}",
+                        "repeatFor": null
+                      }
+                    ],
+                    "eventTrigger": null,
+                    "renderIf": null,
+                    "repeatFor": null
+                  },
+                  {
+                    "component": "PageFooter",
+                    "description": "Standard page footer",
+                    "layout": {},
+                    "props": {},
+                    "content": null,
+                    "children": [],
+                    "eventTrigger": null,
+                    "renderIf": null,
+                    "repeatFor": null
+                  }
+                ],
+                "eventTrigger": null,
+                "renderIf": null,
+                "repeatFor": null
+              }
+            ],
+            "eventTrigger": null,
+            "renderIf": null,
+            "repeatFor": null
+          }
+        },
+        {
+          "id": "CheckoutPage",
+          "spec": {
+            "component": "Page",
+            "description": "Checkout page for SneakerHub",
+            "layout": {
+              "mobile": {
+                "flexDirection": "column"
+              },
+              "desktop": {
+                "flexDirection": "row"
+              }
+            },
+            "props": {},
+            "content": null,
+            "children": [
+              {
+                "component": "AppLayout",
+                "description": "Standard app layout with header and footer",
+                "layout": {},
+                "props": {},
+                "content": null,
+                "children": [
+                  {
+                    "component": "Section",
+                    "description": "Order Summary Section",
+                    "layout": {
+                      "padding": "16px"
+                    },
+                    "props": {},
+                    "content": null,
+                    "children": [
+                      {
+                        "component": "Heading",
+                        "description": "Order Summary Heading",
+                        "layout": {},
+                        "props": {
+                          "level": 2
+                        },
+                        "content": "Order Summary",
+                        "children": [],
+                        "eventTrigger": null,
+                        "renderIf": null,
+                        "repeatFor": null
+                      },
+                      {
+                        "component": "DataTable",
+                        "description": "Table displaying order items",
+                        "layout": {},
+                        "props": {
+                          "data": "{orderItems}",
+                          "columns": [
+                            {
+                              "title": "Product",
+                              "field": "name"
+                            },
+                            {
+                              "title": "Size",
+                              "field": "size"
+                            },
+                            {
+                              "title": "Quantity",
+                              "field": "quantity"
+                            },
+                            {
+                              "title": "Price",
+                              "field": "price"
+                            }
+                          ]
+                        },
+                        "content": null,
+                        "children": [],
+                        "eventTrigger": null,
+                        "renderIf": null,
+                        "repeatFor": null
+                      },
+                      {
+                        "component": "Text",
+                        "description": "Total Price",
+                        "layout": {},
+                        "props": {},
+                        "content": "Total: ${totalPrice}",
+                        "children": [],
+                        "eventTrigger": null,
+                        "renderIf": null,
+                        "repeatFor": null
+                      }
+                    ],
+                    "eventTrigger": null,
+                    "renderIf": null,
+                    "repeatFor": null
+                  },
+                  {
+                    "component": "Section",
+                    "description": "Payment Information Section",
+                    "layout": {
+                      "padding": "16px"
+                    },
+                    "props": {},
+                    "content": null,
+                    "children": [
+                      {
+                        "component": "Heading",
+                        "description": "Payment Information Heading",
+                        "layout": {},
+                        "props": {
+                          "level": 2
+                        },
+                        "content": "Payment Information",
+                        "children": [],
+                        "eventTrigger": null,
+                        "renderIf": null,
+                        "repeatFor": null
+                      },
+                      {
+                        "component": "PaymentForm",
+                        "description": "Form for entering payment details",
+                        "layout": {},
+                        "props": {
+                          "onSubmit": "handlePaymentSubmit"
+                        },
+                        "content": null,
+                        "children": [],
+                        "eventTrigger": null,
+                        "renderIf": null,
+                        "repeatFor": null
+                      }
+                    ],
+                    "eventTrigger": null,
+                    "renderIf": null,
+                    "repeatFor": null
+                  },
+                  {
+                    "component": "Button",
+                    "description": "Place Order Button",
+                    "layout": {},
+                    "props": {
+                      "onClick": "placeOrder"
+                    },
+                    "content": "Place Order",
+                    "children": [],
+                    "eventTrigger": null,
+                    "renderIf": null,
+                    "repeatFor": null
+                  }
+                ],
+                "eventTrigger": null,
+                "renderIf": null,
+                "repeatFor": null
+              }
+            ],
+            "eventTrigger": null,
+            "renderIf": null,
+            "repeatFor": null
+          }
+        },
+        {
+          "id": "AdminDashboard",
+          "spec": {
+            "component": "Page",
+            "description": "Admin Dashboard Page",
+            "layout": {
+              "mobile": {
+                "flexDirection": "column"
+              },
+              "desktop": {
+                "flexDirection": "row"
+              }
+            },
+            "props": {},
+            "content": null,
+            "children": [
+              {
+                "component": "AppLayout",
+                "description": "Main application layout",
+                "layout": {},
+                "props": {},
+                "content": null,
+                "children": [
+                  {
+                    "component": "Sidebar",
+                    "description": "Admin sidebar navigation",
+                    "layout": {},
+                    "props": {},
+                    "content": null,
+                    "children": [
+                      {
+                        "component": "NavLink",
+                        "description": "Link to Inventory Management",
+                        "layout": {},
+                        "props": {
+                          "label": "Inventory",
+                          "to": "/admin/inventory"
+                        },
+                        "content": null,
+                        "children": [],
+                        "eventTrigger": null,
+                        "renderIf": null,
+                        "repeatFor": null
+                      },
+                      {
+                        "component": "NavLink",
+                        "description": "Link to Order View",
+                        "layout": {},
+                        "props": {
+                          "label": "Orders",
+                          "to": "/admin/orders"
+                        },
+                        "content": null,
+                        "children": [],
+                        "eventTrigger": null,
+                        "renderIf": null,
+                        "repeatFor": null
+                      }
+                    ],
+                    "eventTrigger": null,
+                    "renderIf": null,
+                    "repeatFor": null
+                  },
+                  {
+                    "component": "ContentArea",
+                    "description": "Main content area",
+                    "layout": {},
+                    "props": {},
+                    "content": null,
+                    "children": [
+                      {
+                        "component": "Section",
+                        "description": "Inventory Management Section",
+                        "layout": {},
+                        "props": {},
+                        "content": null,
+                        "children": [
+                          {
+                            "component": "DataTable",
+                            "description": "Inventory Data Table",
+                            "layout": {},
+                            "props": {
+                              "columns": [
+                                {
+                                  "title": "Product ID",
+                                  "field": "id"
+                                },
+                                {
+                                  "title": "Product Name",
+                                  "field": "name"
+                                },
+                                {
+                                  "title": "Stock",
+                                  "field": "stock"
+                                },
+                                {
+                                  "title": "Price",
+                                  "field": "price"
+                                }
+                              ],
+                              "data": "{inventoryData}"
+                            },
+                            "content": null,
+                            "children": [],
+                            "eventTrigger": null,
+                            "renderIf": null,
+                            "repeatFor": null
+                          },
+                          {
+                            "component": "Button",
+                            "description": "Add New Product Button",
+                            "layout": {},
+                            "props": {
+                              "label": "Add New Product"
+                            },
+                            "content": null,
+                            "children": [],
+                            "eventTrigger": "addNewProduct",
+                            "renderIf": null,
+                            "repeatFor": null
+                          }
+                        ],
+                        "eventTrigger": null,
+                        "renderIf": "{currentRoute === '/admin/inventory'}",
+                        "repeatFor": null
+                      },
+                      {
+                        "component": "Section",
+                        "description": "Order View Section",
+                        "layout": {},
+                        "props": {},
+                        "content": null,
+                        "children": [
+                          {
+                            "component": "DataTable",
+                            "description": "Order Data Table",
+                            "layout": {},
+                            "props": {
+                              "columns": [
+                                {
+                                  "title": "Order ID",
+                                  "field": "id"
+                                },
+                                {
+                                  "title": "Customer",
+                                  "field": "customer"
+                                },
+                                {
+                                  "title": "Date",
+                                  "field": "date"
+                                },
+                                {
+                                  "title": "Total",
+                                  "field": "total"
+                                }
+                              ],
+                              "data": "{orderData}"
+                            },
+                            "content": null,
+                            "children": [],
+                            "eventTrigger": null,
+                            "renderIf": null,
+                            "repeatFor": null
+                          }
+                        ],
+                        "eventTrigger": null,
+                        "renderIf": "{currentRoute === '/admin/orders'}",
+                        "repeatFor": null
+                      }
+                    ],
+                    "eventTrigger": null,
+                    "renderIf": null,
+                    "repeatFor": null
+                  }
+                ],
+                "eventTrigger": null,
+                "renderIf": null,
+                "repeatFor": null
+              }
+            ],
+            "eventTrigger": null,
+            "renderIf": null,
+            "repeatFor": null
+          }
+        }
+      ]
+    },
+    "interactionFlows": {
+      "flows": [
+        {
+          "id": "customer_browse_and_purchase",
+          "description": "Customer browses sneakers, adds them to cart, and completes checkout.",
+          "startState": "BROWSING_HOME",
+          "states": {
+            "BROWSING_HOME": {
+              "description": "Customer is browsing the homepage.",
+              "onEnter": null,
+              "onExit": null,
+              "actions": [
+                {
+                  "trigger": "view_product_listing",
+                  "targetState": "BROWSING_LISTING",
+                  "apiCall": null,
+                  "payload": null,
+                  "databaseOperations": null,
+                  "onSuccess": null,
+                  "onFailure": null,
+                  "guard": null
+                },
+                {
+                  "trigger": "filter_by_brand",
+                  "targetState": "BROWSING_LISTING",
+                  "apiCall": null,
+                  "payload": {
+                    "brandId": "{selectedBrandId}"
+                  },
+                  "databaseOperations": null,
+                  "onSuccess": null,
+                  "onFailure": null,
+                  "guard": null
+                }
+              ],
+              "final": false
+            },
+            "BROWSING_LISTING": {
+              "description": "Customer is browsing the product listing page.",
+              "onEnter": {
+                "apiCall": "get_products"
+              },
+              "onExit": null,
+              "actions": [
+                {
+                  "trigger": "view_product_details",
+                  "targetState": "VIEWING_PRODUCT",
+                  "apiCall": null,
+                  "payload": null,
+                  "databaseOperations": null,
+                  "onSuccess": null,
+                  "onFailure": null,
+                  "guard": null
+                }
+              ],
+              "final": false
+            },
+            "VIEWING_PRODUCT": {
+              "description": "Customer is viewing a specific product.",
+              "onEnter": {
+                "apiCall": "get_product"
+              },
+              "onExit": null,
+              "actions": [
+                {
+                  "trigger": "add_to_cart",
+                  "targetState": null,
+                  "apiCall": "add_to_cart",
+                  "payload": {
+                    "productId": "{selectedProductId}",
+                    "quantity": "{selectedQuantity}",
+                    "size": "{selectedSize}"
+                  },
+                  "databaseOperations": null,
+                  "onSuccess": "VIEWING_CART",
+                  "onFailure": "ADD_TO_CART_FAILED",
+                  "guard": null
+                }
+              ],
+              "final": false
+            },
+            "ADD_TO_CART_FAILED": {
+              "description": "Adding item to cart failed.",
+              "onEnter": null,
+              "onExit": null,
+              "actions": [
+                {
+                  "trigger": "retry_add_to_cart",
+                  "targetState": "VIEWING_PRODUCT",
+                  "apiCall": null,
+                  "payload": null,
+                  "databaseOperations": null,
+                  "onSuccess": null,
+                  "onFailure": null,
+                  "guard": null
+                },
+                {
+                  "trigger": "go_back_to_product_listing",
+                  "targetState": "BROWSING_LISTING",
+                  "apiCall": null,
+                  "payload": null,
+                  "databaseOperations": null,
+                  "onSuccess": null,
+                  "onFailure": null,
+                  "guard": null
+                }
+              ],
+              "final": false
+            },
+            "VIEWING_CART": {
+              "description": "Customer is viewing their shopping cart.",
+              "onEnter": {
+                "apiCall": "get_cart"
+              },
+              "onExit": null,
+              "actions": [
+                {
+                  "trigger": "proceed_to_checkout",
+                  "targetState": "CHECKOUT",
+                  "apiCall": null,
+                  "payload": null,
+                  "databaseOperations": null,
+                  "onSuccess": null,
+                  "onFailure": null,
+                  "guard": "{cart.items.length > 0}"
+                }
+              ],
+              "final": false
+            },
+            "CHECKOUT": {
+              "description": "Customer is completing the checkout process.",
+              "onEnter": null,
+              "onExit": null,
+              "actions": [
+                {
+                  "trigger": "place_order",
+                  "targetState": null,
+                  "apiCall": "place_order",
+                  "payload": {
+                    "cartId": "{cart.id}",
+                    "shippingAddress": "{shippingAddress}",
+                    "paymentInfo": "{paymentInfo}"
+                  },
+                  "databaseOperations": null,
+                  "onSuccess": "ORDER_CONFIRMED",
+                  "onFailure": "CHECKOUT_FAILED",
+                  "guard": null
+                }
+              ],
+              "final": false
+            },
+            "CHECKOUT_FAILED": {
+              "description": "Checkout process failed.",
+              "onEnter": null,
+              "onExit": null,
+              "actions": [
+                {
+                  "trigger": "retry_checkout",
+                  "targetState": "CHECKOUT",
+                  "apiCall": null,
+                  "payload": null,
+                  "databaseOperations": null,
+                  "onSuccess": null,
+                  "onFailure": null,
+                  "guard": null
+                }
+              ],
+              "final": false
+            },
+            "ORDER_CONFIRMED": {
+              "description": "Order has been successfully placed.",
+              "onEnter": null,
+              "onExit": null,
+              "actions": [],
+              "final": true
+            }
+          }
+        },
+        {
+          "id": "admin_manage_inventory",
+          "description": "Admin manages inventory and views orders.",
+          "startState": "ADMIN_DASHBOARD",
+          "states": {
+            "ADMIN_DASHBOARD": {
+              "description": "Admin is viewing the dashboard.",
+              "onEnter": {
+                "apiCall": "get_inventory"
+              },
+              "onExit": null,
+              "actions": [
+                {
+                  "trigger": "view_orders",
+                  "targetState": "VIEWING_ORDERS",
+                  "apiCall": null,
+                  "payload": null,
+                  "databaseOperations": null,
+                  "onSuccess": null,
+                  "onFailure": null,
+                  "guard": null
+                }
+              ],
+              "final": false
+            },
+            "VIEWING_ORDERS": {
+              "description": "Admin is viewing customer orders.",
+              "onEnter": null,
+              "onExit": null,
+              "actions": [
+                {
+                  "trigger": "go_back_to_dashboard",
+                  "targetState": "ADMIN_DASHBOARD",
+                  "apiCall": null,
+                  "payload": null,
+                  "databaseOperations": null,
+                  "onSuccess": null,
+                  "onFailure": null,
+                  "guard": null
+                }
+              ],
+              "final": false
+            }
+          }
+        }
+      ]
+    },
+    "requirementIndex": {
+      "pages": [
+        {
+          "id": "Homepage",
+          "path": "app/page.tsx",
+          "description": "Displays featured sneakers and brand categories.",
+          "uiSpecId": "Homepage",
+          "flowIds": ["customer_browse_and_purchase"],
+          "apiIds": ["get-products"],
+          "dataBindings": ["featuredSneakers", "brands"]
+        },
+        {
+          "id": "ProductListingPage",
+          "path": "app/products/page.tsx",
+          "description": "Lists sneakers based on selected criteria (e.g., brand, search query).",
+          "uiSpecId": "ProductListingPage",
+          "flowIds": ["customer_browse_and_purchase"],
+          "apiIds": ["get-products"],
+          "dataBindings": ["brands", "products"]
+        },
+        {
+          "id": "ProductDetailsPage",
+          "path": "app/products/[id]/page.tsx",
+          "description": "Displays detailed information about a specific sneaker.",
+          "uiSpecId": "ProductDetailsPage",
+          "flowIds": ["customer_browse_and_purchase"],
+          "apiIds": ["get-product-by-id", "add-to-cart"],
+          "dataBindings": ["product"]
+        },
+        {
+          "id": "ShoppingCartPage",
+          "path": "app/cart/page.tsx",
+          "description": "Allows users to review and manage their selected items.",
+          "uiSpecId": "ShoppingCartPage",
+          "flowIds": ["customer_browse_and_purchase"],
+          "apiIds": [],
+          "dataBindings": ["cartItems", "cartSubtotal"]
+        },
+        {
+          "id": "CheckoutPage",
+          "path": "app/checkout/page.tsx",
+          "description": "Facilitates secure payment and order confirmation.",
+          "uiSpecId": "CheckoutPage",
+          "flowIds": ["customer_browse_and_purchase"],
+          "apiIds": ["checkout"],
+          "dataBindings": ["orderItems", "totalPrice"]
+        },
+        {
+          "id": "AdminDashboard",
+          "path": "app/admin/dashboard/page.tsx",
+          "description": "Provides tools for managing inventory and viewing orders.",
+          "uiSpecId": "AdminDashboard",
+          "flowIds": ["admin_manage_inventory"],
+          "apiIds": ["get-inventory", "get-orders"],
+          "dataBindings": ["inventoryData", "orderData", "currentRoute"]
+        }
+      ]
+    },
+    "authRules": {
+      "roles": ["Public", "Customer", "Admin"],
+      "rules": [
+        {
+          "role": "Public",
+          "canAccessPages": [
+            "Homepage",
+            "ProductListingPage",
+            "ProductDetailsPage"
+          ],
+          "canCallApis": ["get-products", "get-product-by-id"]
+        },
+        {
+          "role": "Customer",
+          "canAccessPages": [
+            "Homepage",
+            "ProductListingPage",
+            "ProductDetailsPage",
+            "ShoppingCartPage",
+            "CheckoutPage"
+          ],
+          "canCallApis": [
+            "get-products",
+            "get-product-by-id",
+            "add-to-cart",
+            "checkout"
+          ]
+        },
+        {
+          "role": "Admin",
+          "canAccessPages": ["AdminDashboard"],
+          "canCallApis": ["get-inventory", "update-inventory", "get-orders"]
+        }
+      ]
+    },
+    "workGraph": {
+      "nodes": [
+        {
+          "id": "start-vm",
+          "task": "start-vm",
+          "description": "Start the development VM.",
+          "dependsOn": []
+        },
+        {
+          "id": "lib/types.ts",
+          "task": "generate-types",
+          "description": "Generate TypeScript types.",
+          "dependsOn": []
+        },
+        {
+          "id": "lib/data.ts",
+          "task": "generate-data-layer",
+          "description": "Generate the data access layer.",
+          "dependsOn": ["lib/types.ts"]
+        },
+        {
+          "id": "generate:app/api/products/route.ts",
+          "task": "generate-api-route",
+          "description": "Generate API route for get-products",
+          "dependsOn": ["start-vm", "lib/data.ts"]
+        },
+        {
+          "id": "review:app/api/products/route.ts",
+          "task": "review-code",
+          "description": "Review architecture of app/api/products/route.ts",
+          "dependsOn": ["generate:app/api/products/route.ts"]
+        },
+        {
+          "id": "generate:app/api/products/:id/route.ts",
+          "task": "generate-api-route",
+          "description": "Generate API route for get-product-by-id",
+          "dependsOn": ["start-vm", "lib/data.ts"]
+        },
+        {
+          "id": "review:app/api/products/:id/route.ts",
+          "task": "review-code",
+          "description": "Review architecture of app/api/products/:id/route.ts",
+          "dependsOn": ["generate:app/api/products/:id/route.ts"]
+        },
+        {
+          "id": "generate:app/api/cart/route.ts",
+          "task": "generate-api-route",
+          "description": "Generate API route for add-to-cart",
+          "dependsOn": ["start-vm", "lib/data.ts"]
+        },
+        {
+          "id": "review:app/api/cart/route.ts",
+          "task": "review-code",
+          "description": "Review architecture of app/api/cart/route.ts",
+          "dependsOn": ["generate:app/api/cart/route.ts"]
+        },
+        {
+          "id": "generate:app/api/checkout/route.ts",
+          "task": "generate-api-route",
+          "description": "Generate API route for checkout",
+          "dependsOn": ["start-vm", "lib/data.ts"]
+        },
+        {
+          "id": "review:app/api/checkout/route.ts",
+          "task": "review-code",
+          "description": "Review architecture of app/api/checkout/route.ts",
+          "dependsOn": ["generate:app/api/checkout/route.ts"]
+        },
+        {
+          "id": "generate:app/api/admin/inventory/route.ts",
+          "task": "generate-api-route",
+          "description": "Generate API route for get-inventory",
+          "dependsOn": ["start-vm", "lib/data.ts"]
+        },
+        {
+          "id": "review:app/api/admin/inventory/route.ts",
+          "task": "review-code",
+          "description": "Review architecture of app/api/admin/inventory/route.ts",
+          "dependsOn": ["generate:app/api/admin/inventory/route.ts"]
+        },
+        {
+          "id": "generate:app/api/admin/inventory/route.ts",
+          "task": "generate-api-route",
+          "description": "Generate API route for update-inventory",
+          "dependsOn": ["start-vm", "lib/data.ts"]
+        },
+        {
+          "id": "review:app/api/admin/inventory/route.ts",
+          "task": "review-code",
+          "description": "Review architecture of app/api/admin/inventory/route.ts",
+          "dependsOn": ["generate:app/api/admin/inventory/route.ts"]
+        },
+        {
+          "id": "generate:app/api/admin/orders/route.ts",
+          "task": "generate-api-route",
+          "description": "Generate API route for get-orders",
+          "dependsOn": ["start-vm", "lib/data.ts"]
+        },
+        {
+          "id": "review:app/api/admin/orders/route.ts",
+          "task": "review-code",
+          "description": "Review architecture of app/api/admin/orders/route.ts",
+          "dependsOn": ["generate:app/api/admin/orders/route.ts"]
+        },
+        {
+          "id": "generate:app/api/health/route.ts",
+          "task": "generate-api-route",
+          "description": "Generate API route for api_health_check",
+          "dependsOn": ["start-vm", "lib/data.ts"]
+        },
+        {
+          "id": "review:app/api/health/route.ts",
+          "task": "review-code",
+          "description": "Review architecture of app/api/health/route.ts",
+          "dependsOn": ["generate:app/api/health/route.ts"]
+        },
+        {
+          "id": "generate:app/page.tsx",
+          "task": "generate-frontend-page",
+          "description": "Generate frontend page for Homepage",
+          "dependsOn": ["start-vm", "lib/types.ts"]
+        },
+        {
+          "id": "review:app/page.tsx",
+          "task": "review-code",
+          "description": "Review architecture of app/page.tsx",
+          "dependsOn": ["generate:app/page.tsx"]
+        },
+        {
+          "id": "generate:app/products/page.tsx",
+          "task": "generate-frontend-page",
+          "description": "Generate frontend page for ProductListingPage",
+          "dependsOn": ["start-vm", "lib/types.ts"]
+        },
+        {
+          "id": "review:app/products/page.tsx",
+          "task": "review-code",
+          "description": "Review architecture of app/products/page.tsx",
+          "dependsOn": ["generate:app/products/page.tsx"]
+        },
+        {
+          "id": "generate:app/products/[id]/page.tsx",
+          "task": "generate-frontend-page",
+          "description": "Generate frontend page for ProductDetailsPage",
+          "dependsOn": ["start-vm", "lib/types.ts"]
+        },
+        {
+          "id": "review:app/products/[id]/page.tsx",
+          "task": "review-code",
+          "description": "Review architecture of app/products/[id]/page.tsx",
+          "dependsOn": ["generate:app/products/[id]/page.tsx"]
+        },
+        {
+          "id": "generate:app/cart/page.tsx",
+          "task": "generate-frontend-page",
+          "description": "Generate frontend page for ShoppingCartPage",
+          "dependsOn": ["start-vm", "lib/types.ts"]
+        },
+        {
+          "id": "review:app/cart/page.tsx",
+          "task": "review-code",
+          "description": "Review architecture of app/cart/page.tsx",
+          "dependsOn": ["generate:app/cart/page.tsx"]
+        },
+        {
+          "id": "generate:app/checkout/page.tsx",
+          "task": "generate-frontend-page",
+          "description": "Generate frontend page for CheckoutPage",
+          "dependsOn": ["start-vm", "lib/types.ts"]
+        },
+        {
+          "id": "review:app/checkout/page.tsx",
+          "task": "review-code",
+          "description": "Review architecture of app/checkout/page.tsx",
+          "dependsOn": ["generate:app/checkout/page.tsx"]
+        },
+        {
+          "id": "generate:app/admin/dashboard/page.tsx",
+          "task": "generate-frontend-page",
+          "description": "Generate frontend page for AdminDashboard",
+          "dependsOn": ["start-vm", "lib/types.ts"]
+        },
+        {
+          "id": "review:app/admin/dashboard/page.tsx",
+          "task": "review-code",
+          "description": "Review architecture of app/admin/dashboard/page.tsx",
+          "dependsOn": ["generate:app/admin/dashboard/page.tsx"]
+        },
+        {
+          "id": "run-tests",
+          "task": "run-tests",
+          "description": "Run integration and smoke tests.",
+          "dependsOn": [
+            "review:app/api/products/route.ts",
+            "review:app/api/products/:id/route.ts",
+            "review:app/api/cart/route.ts",
+            "review:app/api/checkout/route.ts",
+            "review:app/api/admin/inventory/route.ts",
+            "review:app/api/admin/inventory/route.ts",
+            "review:app/api/admin/orders/route.ts",
+            "review:app/api/health/route.ts",
+            "review:app/page.tsx",
+            "review:app/products/page.tsx",
+            "review:app/products/[id]/page.tsx",
+            "review:app/cart/page.tsx",
+            "review:app/checkout/page.tsx",
+            "review:app/admin/dashboard/page.tsx"
+          ]
+        }
+      ]
+    }
+  }
+}

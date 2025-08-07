@@ -1,0 +1,114 @@
+AGENTS:
+
+<--------------Analyst Agent--------------->
+This Python script, analyst_agent.py, functions as an AI-powered Product Analyst. Its primary purpose is to take a user's plain-text project description and transform it into a highly structured and detailed Software Requirements Specification (SRS) in JSON format, using Google's Gemini Pro model.
+
+How It Works
+Input: The script ingests a JSON object from standard input containing a projectName and a prompt (the user's project idea).
+
+Structured Schema: It uses the Pydantic library to define a strict schema for the final SRS. This schema, ValidatedRequirements, requires specific details like:
+
+projectName: The name of the project.
+
+personas: A list of user types (e.g., 'Admin', 'Guest') with descriptions.
+
+userStories: Detailed stories in the format "As a [persona], I can [action] so that [benefit]," complete with acceptance criteria.
+
+screens: A breakdown of the application's screens, their functions, and which personas use them.
+
+Prompt Engineering: It generates a detailed system prompt for the Gemini LLM. This prompt instructs the AI to act as an expert product analyst and embeds the complete JSON schema it must follow, ensuring the output is structured correctly.
+
+Generation & Validation: The script sends the prompt to the Gemini API. When it receives the response, it immediately attempts to parse and validate the generated JSON against the Pydantic schema.
+
+Key Feature: Context-Aware Self-Correction 🤖
+INPUT:
+The script ingests a JSON object from standard input containing a projectName and a prompt (the user's project idea).
+
+OUTPUT:
+{
+"status": "VALIDATION_COMPLETE",
+"validatedRequirements": {
+"projectName": "...",
+"personas": [...],
+"userStories": [...],
+"screens": [...]
+}
+}
+
+<------DATA_MODEL_AGENT------>
+This agent:
+
+Generates a single, precise, relationally-normalized, constraint-rich data model schema based on a validated SRS(Software Requirements Specification).
+
+It emphasizes:
+
+- Domain-aware archetyping (SaaS, E-commerce, etc.)
+
+- Strict adherence to Pydantic schema
+
+- Retry-and-correct loop for invalid model output
+
+1. Data Modeling Depth:
+
+- The FieldDefinition and DataModel structures are enterprise-grade:
+
+- enum_values, indexed, unique, and default add low-level DB control
+
+- Encourages normalization and polymorphic relationships — rare in LLM data agents.
+
+2. Prompt Engineering Excellence:
+
+- The create_system_prompt() logic does 5 crucial things:
+
+- Supplies the entire SRS as context
+
+- Embeds the model name and purpose inline
+
+- Describes normalization rules
+
+- Provides polymorphic schema conventions
+
+- Enforces strict schema adherence via Pydantic's schema
+
+3. Contextual Fixing Strategy
+   On failure, the agent:
+
+- Binds validation errors, failed JSON, and schema re-prompt into a correction loop
+
+- Tries up to 3 times before failing gracefully
+
+- This is extremely effective for combating LLM JSON hallucination.
+
+OUTPUT:
+{ "status": "DATA_MODEL_GENERATED", "dataModel": { ... } }
+{ "status": "DATA_MODEL_AGENT_FAILED", "error": "...", "traceback": "..." }
+
+<-------WORK_GRAPH_AGENT-------->
+Output Example:
+
+{
+"status": "WORK_GRAPH_GENERATED",
+"workGraph": {
+"nodes": [
+{
+"id": "start-vm",
+"task": "start-vm",
+"description": "Start the development VM.",
+"dependsOn": []
+},
+{
+"id": "generate:app/api/user/route.ts",
+"task": "generate-api-route",
+"description": "Generate API route for user",
+"dependsOn": ["start-vm", "lib/data.ts"]
+},
+...
+{
+"id": "run-tests",
+"task": "run-tests",
+"description": "Run integration and smoke tests.",
+"dependsOn": ["review:..."]
+}
+]
+}
+}
